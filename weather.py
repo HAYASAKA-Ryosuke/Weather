@@ -22,7 +22,7 @@ result[unicode(" | ",'utf-8')]=weatherinfo.find('時々')
 result[unicode("->",'utf-8')]=weatherinfo.find('後')
 result[unicode("☃ ",'utf-8')]=weatherinfo.find('雪')
 result[unicode("☂ ",'utf-8')]=weatherinfo.find('雨')
-
+result[unicode("or",'utf-8')]=weatherinfo.find('か')
 
 f=codecs.open('weatherpy.cache','w','utf-8')
 output=""
