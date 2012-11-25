@@ -4,6 +4,7 @@ from BeautifulSoup import BeautifulSoup
 import urllib2
 import sys
 import os
+import codecs
 URL="http://www.jma.go.jp/jp/yoho/306.html"
 
 html = urllib2.urlopen(URL).read()
