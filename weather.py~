@@ -23,7 +23,7 @@ temp= (float(j["main"]["temp"]))-273.15
 #result[unicode("or",'utf-8')]=weatherinfo.find('か')
 
 f=codecs.open('weatherpy.cache','w','utf-8')
-output=description+":"+str(temp)+u"℃"
+output=description+":"+str(temp)+"度"
 f.write(output)
 f.close()
 os.system("cat weatherpy.cache")
