@@ -1,30 +1,32 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
+#湿度も取得して温度と交互に表示する
 import urllib2
 import json
 import codecs
 import os
+def writecache(output):
+    f=codecs.open('weatherpy.cache','w','utf-8')
+    f.write(output)
+    f.close()
+    
+def readcache():
+    f=codecs.open('weatherpy.cache','r','utf-8')
+    cachedata=f.readline()
+    f.close()
+    if(u"％" in cachedata):
+        return description+":"+str(humidity)+u'％'
+    else:
+        return description+":"+str(temp)+u'℃'
+
 URL="http://api.openweathermap.org/data/2.5/weather?q=Sapporo,jp"
 data = urllib2.urlopen(URL)
 j = json.load(data)
-print j
+#print j
 description= j["weather"][0]['description']
 temp= (float(j["main"]["temp"]))-273.15
-
-#
-##本日の天気予報を取得 備考:[0]:本日取得[1]:明日
-#
-#result[unicode("☁ ",'utf-8')]=weatherinfo.find('曇')
-#result[unicode("☀ ",'utf-8')]=weatherinfo.find('晴')
-#result[unicode(" | ",'utf-8')]=weatherinfo.find('時々') 
-#result[unicode("->",'utf-8')]=weatherinfo.find('後')
-#result[unicode("☃ ",'utf-8')]=weatherinfo.find('雪')
-#result[unicode("☂ ",'utf-8')]=weatherinfo.find('雨')
-#result[unicode("or",'utf-8')]=weatherinfo.find('か')
-
-f=codecs.open('weatherpy.cache','w','utf-8')
-output=description+":"+str(temp)+"度"
-f.write(output)
-f.close()
+humidity= (float(j["main"]["humidity"]))
+output=readcache()
+writecache(output)
 os.system("cat weatherpy.cache")
 
