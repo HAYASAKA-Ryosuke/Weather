@@ -1,35 +1,32 @@
-#! /usr/local/bin/python
 # -*- coding: utf-8 -*-
-
-#湿度も取得して温度と交互に表示する
-import urllib2
-import json
-import codecs
+import urllib.request
+from bs4 import BeautifulSoup
 import os
-def writecache(output):
-    f=codecs.open('/Users/hayasaka/weatherpy.cache','w','utf-8')
-    f.write(output)
-    f.close()
-    
-def readcache():
-    f=codecs.open('/Users/hayasaka/weatherpy.cache','r','utf-8')
-    cachedata=f.readline()
-    f.close()
-    if(u"％" in cachedata):
-        return description+":"+str(temp)+u'℃'
-    else:
-        return description+":"+str(humidity)+u'％'
+import codecs
 
-try:
-    URL="http://api.openweathermap.org/data/2.5/weather?q=Sapporo,jp"
-    data = urllib2.urlopen(URL)
-    j = json.load(data)
-    description= j["weather"][0]['description']
-    temp= (float(j["main"]["temp"]))-273.15
-    #writecache(str(description)+':'+str(temp))
-    humidity= (float(j["main"]["humidity"]))
-    output=readcache()
-    writecache(output)
-    os.system("cat /Users/hayasaka/weatherpy.cache")
-except:
-    print "error"
+
+URL = "http://www.jma.go.jp/jp/yoho/306.html"
+html = ""
+with urllib.request.urlopen(URL) as url:
+    html = url.read()
+
+soup = BeautifulSoup(html)
+
+data = soup('th', {'class': 'weather'})[0]
+weatherinfo = data('img')[0].get('title')
+result = {}
+result["☁ "] = weatherinfo.find('曇')
+result["☀ "] = weatherinfo.find('晴')
+result[" | "] = weatherinfo.find('時々')
+result["->"] = weatherinfo.find('後')
+result["☃ "] = weatherinfo.find('雪')
+result["☂ "] = weatherinfo.find('雨')
+result["or"] = weatherinfo.find('か')
+
+f = codecs.open('weatherpy.cache', 'w', 'utf-8')
+f.write(u'札')
+for data, num in sorted(result.items(), key=lambda x: x[1]):
+    if -1 != num:
+        f.write(data)
+f.close()
+os.system("cat weatherpy.cache")
